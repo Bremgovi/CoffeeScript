@@ -12,8 +12,33 @@ TOKENS = {
     'TT_LPAREN': 'LPAREN',
     'TT_RPAREN': 'RPAREN',
     'TT_EOF': 'EOF',
-    'TT_POW': 'POW'
+    'TT_POW': 'POW',
+    'TT_IDENTIFIER': 'IDENTIFIER',
+    'TT_KEYWORD': 'KEYWORD',
+    'TT_EQ': 'EQ',
 }
+
+KEYWORDS = [
+    'VAR',
+    'AND',
+    'OR',
+    'NOT',
+    'IF',
+    'ELIF',
+    'ELSE',
+    'FOR',
+    'TO',
+    'STEP',
+    'WHILE',
+    'FUN',
+    'END',
+    'RETURN',
+    'CONTINUE',
+    'BREAK',
+    'TRUE',
+    'FALSE',
+    'NULL',
+]
 
 # Token class to keep track of the tokens in the input text
 class Token:
@@ -29,6 +54,8 @@ class Token:
         if pos_end:
             self.pos_end = pos_end
         
+    def matches(self, type_, value):
+        return self.type == type_ and self.value == value
 
     # String representation of the token
     def __repr__(self):

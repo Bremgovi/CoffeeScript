@@ -1,4 +1,4 @@
-from modules.errors import RuntimeError
+from modules.errors import RTError
 ###############################
 # VALUES
 ###############################
@@ -28,7 +28,7 @@ class Number:
     def dived_by(self, other):
         if isinstance(other, Number):
             if other.value == 0:
-                return None, RuntimeError(other.pos_start, other.pos_end, 'Division by zero', self.context)
+                return None, RTError(other.pos_start, other.pos_end, 'Division by zero', self.context)
             return Number(self.value / other.value).set_context(self.context), None
     def powed_by(self, other):
         if isinstance(other, Number):

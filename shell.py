@@ -1,4 +1,4 @@
-import run
+import compiler.run as run
 
 while True:
     text = input('shell > ')

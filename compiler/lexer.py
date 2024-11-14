@@ -1,5 +1,10 @@
-from compiler.tokens import Token, TOKENS
+from compiler.tokens import Token, TOKENS, KEYWORDS
 from modules.errors import IllegalCharError
+import string
+
+LETTERS = string.ascii_letters
+DIGITS = '0123456789'
+LETTERS_DIGITS = LETTERS + DIGITS
 ###############################
 # POSITION
 ###############################
@@ -43,8 +48,10 @@ class Lexer:
         while self.current_char != None:
             if self.current_char in ' \t':
                 self.advance()
-            elif self.current_char.isdigit():
+            elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
+            elif self.current_char in LETTERS:
+                tokens.append(self.make_identifier())
             elif self.current_char == '+':
                 tokens.append(Token(TOKENS['TT_PLUS'], pos_start=self.pos))
                 self.advance()
@@ -59,6 +66,9 @@ class Lexer:
                 self.advance()
             elif self.current_char == '^':
                 tokens.append(Token(TOKENS['TT_POW'], pos_start=self.pos))
+                self.advance()
+            elif self.current_char == '=':
+                tokens.append(Token(TOKENS['TT_EQ'], pos_start=self.pos))
                 self.advance()
             elif self.current_char == '(':
                 tokens.append(Token(TOKENS['TT_LPAREN'], pos_start=self.pos))
@@ -93,4 +103,16 @@ class Lexer:
             return Token(TOKENS['TT_INT'], int(num_str), pos_start, self.pos)
         else:
             return Token(TOKENS['TT_FLOAT'], float(num_str), pos_start, self.pos)
+        
+    # Function to convert character into identifier
+    def make_identifier(self):
+        id_str = ''
+        pos_start = self.pos.copy()
+
+        while self.current_char != None and self.current_char in LETTERS_DIGITS + '_':
+            id_str += self.current_char
+            self.advance()
+
+        tok_type = TOKENS['TT_KEYWORD'] if id_str in KEYWORDS else TOKENS['TT_IDENTIFIER']
+        return Token(tok_type, id_str, pos_start, self.pos)
 
