@@ -17,5 +17,8 @@ class SymbolTable:
     
     def remove(self, name):
         del self.symbols[name]
+
+    def __repr__(self):
+        return f"{self.symbols}"
     
     

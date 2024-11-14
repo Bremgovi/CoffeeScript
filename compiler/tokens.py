@@ -11,11 +11,17 @@ TOKENS = {
     'TT_DIV': 'DIV',
     'TT_LPAREN': 'LPAREN',
     'TT_RPAREN': 'RPAREN',
-    'TT_EOF': 'EOF',
     'TT_POW': 'POW',
     'TT_IDENTIFIER': 'IDENTIFIER',
     'TT_KEYWORD': 'KEYWORD',
     'TT_EQ': 'EQ',
+    'TT_EE': 'EE',
+    'TT_NE': 'NE',
+    'TT_LT': 'LT',
+    'TT_GT': 'GT',
+    'TT_LTE': 'LTE',
+    'TT_GTE': 'GTE',
+    'TT_EOF': 'EOF',
 }
 
 KEYWORDS = [
@@ -24,20 +30,21 @@ KEYWORDS = [
     'OR',
     'NOT',
     'IF',
+    'THEN',
     'ELIF',
     'ELSE',
-    'FOR',
-    'TO',
-    'STEP',
-    'WHILE',
-    'FUN',
-    'END',
-    'RETURN',
-    'CONTINUE',
-    'BREAK',
-    'TRUE',
-    'FALSE',
-    'NULL',
+    # 'FOR',
+    # 'TO',
+    # 'STEP',
+    # 'WHILE',
+    # 'FUN',
+    # 'END',
+    # 'RETURN',
+    # 'CONTINUE',
+    # 'BREAK',
+    # 'TRUE',
+    # 'FALSE',
+    # 'NULL',
 ]
 
 # Token class to keep track of the tokens in the input text
@@ -53,7 +60,7 @@ class Token:
             self.pos_end.advance()
         if pos_end:
             self.pos_end = pos_end
-        
+
     def matches(self, type_, value):
         return self.type == type_ and self.value == value
 
