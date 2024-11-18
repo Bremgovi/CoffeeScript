@@ -1,6 +1,6 @@
 from modules.errors import InvalidSyntaxError
 from compiler.tokens import TOKENS
-from modules.nodes import CallNode, ForNode, FuncDefNode, IfNode, NumberNode, BinOpNode, UnaryOpNode, VarAccessNode, VarAssignNode, WhileNode
+from modules.nodes import CallNode, ForNode, FuncDefNode, IfNode, NumberNode, BinOpNode, StringNode, UnaryOpNode, VarAccessNode, VarAssignNode, WhileNode
 ###############################
 # PARSE RESULT
 # ParseResult class to keep track of the result of the parsing process
@@ -119,6 +119,11 @@ class Parser:
             self.advance()
             return res.success(NumberNode(tok))
         
+        if tok.type == TOKENS['TT_STRING']:
+            res.register_advancement()
+            self.advance()
+            return res.success(StringNode(tok))
+
         elif tok.type == TOKENS['TT_IDENTIFIER']:
             res.register_advancement()
             self.advance()

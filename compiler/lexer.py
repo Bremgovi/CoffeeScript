@@ -54,6 +54,8 @@ class Lexer:
                 tokens.append(self.make_number())
             elif self.current_char in LETTERS:
                 tokens.append(self.make_identifier())
+            elif self.current_char == '"':
+                tokens.append(self.make_string())
             elif self.current_char == '+':
                 tokens.append(Token(TOKENS['TT_PLUS'], pos_start=self.pos))
                 self.advance()
@@ -127,6 +129,32 @@ class Lexer:
 
         tok_type = TOKENS['TT_KEYWORD'] if id_str in KEYWORDS else TOKENS['TT_IDENTIFIER']
         return Token(tok_type, id_str, pos_start, self.pos)
+
+    # Function to convert character into string
+    def make_string(self):
+        string = ''
+        pos_start = self.pos.copy()
+        escape_character = False
+        self.advance()
+
+        escape_characters = {
+            'n': '\n',
+            't': '\t'
+        }
+
+        while self.current_char != None and (self.current_char != '"' or escape_character):
+            if escape_character:
+                string += escape_characters.get(self.current_char, self.current_char)
+            else:
+                if self.current_char == '\\':
+                    escape_character = True
+                else:
+                    string += self.current_char
+            self.advance()
+            escape_character = False
+
+        self.advance()
+        return Token(TOKENS['TT_STRING'], string, pos_start, self.pos)
 
     # Function to convert character into equals
     def make_not_equals(self):

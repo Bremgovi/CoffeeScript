@@ -2,6 +2,7 @@ from compiler.tokens import TOKENS
 from modules.number import Number
 from modules.errors import RTError
 from modules.function import Function
+from modules.string import String
 
 ###############################
 # RUNTIME RESULT
@@ -40,6 +41,11 @@ class Interpreter:
             Number(node.tok.value).set_context(context).set_pos(node.pos_start, node.pos_end)
         )
     
+    def visit_StringNode(self, node, context):
+        return RTResult().success(
+            String(node.tok.value).set_context(context).set_pos(node.pos_start, node.pos_end)
+        )
+
     def visit_VarAccessNode(self, node, context):
         res = RTResult()
         var_name = node.var_name_tok.value
