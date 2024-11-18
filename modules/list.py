@@ -54,10 +54,13 @@ class List(Value):
     
     # Copy the list
     def copy(self):
-        copy = List(self.elements[:])
+        copy = List(self.elements)
         copy.set_context(self.context)
         copy.set_pos(self.pos_start, self.pos_end)
         return copy
     
+    def __str__(self):
+        return f'[{", ".join([str(x) for x in self.elements])}]'
+
     def __repr__(self):
         return f'[{", ".join([str(x) for x in self.elements])}]'

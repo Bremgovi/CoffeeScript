@@ -1,3 +1,4 @@
+import math
 from modules.value import Value
 from modules.errors import RTError
 
@@ -114,4 +115,4 @@ class Number(Value):
 Number.null = Number(0)
 Number.false = Number(0)
 Number.true = Number(1)
-
+Number.math_PI = math.pi

@@ -17,7 +17,7 @@ class RTResult:
         if res.error: self.error = res.error
         return res.value
     
-    def success(self, value):
+    def success(self, value=None):
         self.value = value
         return self
     
@@ -67,7 +67,7 @@ class Interpreter:
                 f"'{var_name}' is not defined",
                 context
             ))
-        value = value.copy().set_pos(node.pos_start, node.pos_end)
+        value = value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
         return res.success(value)
 
     def visit_VarAssignNode(self, node, context):
@@ -211,4 +211,5 @@ class Interpreter:
         
         return_value = res.register(value_to_call.execute(args, self, res))
         if res.error: return res
+        return_value = return_value.copy().set_pos(node.pos_start, node.pos_end).set_context(context)
         return res.success(return_value)
