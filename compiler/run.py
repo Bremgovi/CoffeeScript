@@ -13,9 +13,9 @@ from modules.number import Number
 ###############################
 
 global_symbol_table = SymbolTable()
-global_symbol_table.set("NULL", Number(0))
-global_symbol_table.set("TRUE", Number(1))
-global_symbol_table.set("FALSE", Number(0))
+global_symbol_table.set("NULL", Number.null)
+global_symbol_table.set("TRUE", Number.true)
+global_symbol_table.set("FALSE", Number.false)
 
 def run(fn, text, context = None):
     # Generate Tokens (Lexical Analysis)

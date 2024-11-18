@@ -109,3 +109,9 @@ class Number(Value):
         
     def __repr__(self):
         return str(self.value)
+    
+# CONSTANTS
+Number.null = Number(0)
+Number.false = Number(0)
+Number.true = Number(1)
+
