@@ -69,6 +69,9 @@ class Lexer:
             elif self.current_char == '^':
                 tokens.append(Token(TOKENS['TT_POW'], pos_start=self.pos))
                 self.advance()
+            elif self.current_char == ',':
+                tokens.append(Token(TOKENS['TT_COMMA'], pos_start=self.pos))
+                self.advance()
             elif self.current_char == '(':
                 tokens.append(Token(TOKENS['TT_LPAREN'], pos_start=self.pos))
                 self.advance()
@@ -145,6 +148,10 @@ class Lexer:
         if self.current_char == '=':
             self.advance()
             token_type = TOKENS['TT_EE']
+
+        elif self.current_char == '>':
+            self.advance()
+            token_type = TOKENS['TT_ARROW']
         
         return Token(token_type, pos_start=pos_start, pos_end=self.pos)
     
@@ -169,3 +176,4 @@ class Lexer:
             token_type = TOKENS['TT_GTE']
         
         return Token(token_type, pos_start=pos_start, pos_end=self.pos)
+    
