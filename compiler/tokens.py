@@ -12,6 +12,8 @@ TOKENS = {
     'TT_DIV': 'DIV',
     'TT_LPAREN': 'LPAREN',
     'TT_RPAREN': 'RPAREN',
+    'TT_LSQUARE': 'LSQUARE',
+    'TT_RSQUARE': 'RSQUARE',
     'TT_POW': 'POW',
     'TT_IDENTIFIER': 'IDENTIFIER',
     'TT_KEYWORD': 'KEYWORD',

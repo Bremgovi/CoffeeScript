@@ -80,6 +80,12 @@ class Lexer:
             elif self.current_char == ')':
                 tokens.append(Token(TOKENS['TT_RPAREN'], pos_start=self.pos))
                 self.advance()
+            elif self.current_char == '[':
+                tokens.append(Token(TOKENS['TT_LSQUARE'], pos_start=self.pos))
+                self.advance()
+            elif self.current_char == ']':
+                tokens.append(Token(TOKENS['TT_RSQUARE'], pos_start=self.pos))
+                self.advance()
             elif self.current_char == '!':
                 token, error = self.make_not_equals()
                 if error: return [], error

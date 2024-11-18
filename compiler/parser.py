@@ -1,6 +1,6 @@
 from modules.errors import InvalidSyntaxError
 from compiler.tokens import TOKENS
-from modules.nodes import CallNode, ForNode, FuncDefNode, IfNode, NumberNode, BinOpNode, StringNode, UnaryOpNode, VarAccessNode, VarAssignNode, WhileNode
+from modules.nodes import CallNode, ForNode, FuncDefNode, IfNode, ListNode, NumberNode, BinOpNode, StringNode, UnaryOpNode, VarAccessNode, VarAssignNode, WhileNode
 ###############################
 # PARSE RESULT
 # ParseResult class to keep track of the result of the parsing process
@@ -92,7 +92,7 @@ class Parser:
                 if res.error:
                     return res.failure(InvalidSyntaxError(
                         self.current_tok.pos_start, self.current_tok.pos_end,
-                        "Expected ')', 'VAR', int, float, identifier, '+', '-', '(', 'NOT'"
+                        "Expected ')', 'VAR', int, float, identifier, '+', '-', '(', '[', 'NOT'"
                     ))
                 while self.current_tok.type == TOKENS['TT_COMMA']:
                     res.register_advancement()
@@ -144,6 +144,11 @@ class Parser:
                     "Expected ')'"
                 ))
         
+        elif tok.type == TOKENS['TT_LSQUARE']:
+            list_expr = res.register(self.list_expr())
+            if res.error: return res
+            return res.success(list_expr)
+
         elif tok.matches(TOKENS['TT_KEYWORD'], 'IF'):
             if_expr = res.register(self.if_expr())
             if res.error: return res
@@ -166,7 +171,7 @@ class Parser:
 
         return res.failure(InvalidSyntaxError(
             tok.pos_start, tok.pos_end,
-            "Expected int, float, identifier, '+', '-', '(', 'IF', 'FOR', 'WHILE', 'FUNCTION'"
+            "Expected int, float, identifier, '+', '-', '(', '[', 'IF', 'FOR', 'WHILE', 'FUNCTION'"
         ))
 
     def power(self):
@@ -218,10 +223,48 @@ class Parser:
         if res.error: 
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end,
-                "Expected 'VAR', int, float, identifier, '+', '-', '(', 'IF', 'FOR', 'WHILE', 'FUNCTION'"
+                "Expected 'VAR', int, float, identifier, '+', '-', '(', '[', 'IF', 'FOR', 'WHILE', 'FUNCTION'"
             ))
         return res.success(node)
     
+    def list_expr(self):
+        res = ParseResult()
+        element_nodes = []
+        pos_start = self.current_tok.pos_start.copy()
+
+        if self.current_tok.type != TOKENS['TT_LSQUARE']:
+            return res.failure(InvalidSyntaxError(
+                self.current_tok.pos_start, self.current_tok.pos_end,
+                f"Expected '['"
+            ))
+
+        res.register_advancement()
+        self.advance()
+
+        if self.current_tok.type == TOKENS['TT_RSQUARE']:
+            res.register_advancement()
+            self.advance()
+        else:
+            element_nodes.append(res.register(self.expr()))
+            if res.error:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    "Expected ']', 'VAR', int, float, identifier, '+', '-', '(', '[', 'IF', 'FOR', 'WHILE', 'FUNCTION'"
+                ))
+            while self.current_tok.type == TOKENS['TT_COMMA']:
+                res.register_advancement()
+                self.advance()
+                element_nodes.append(res.register(self.expr()))
+                if res.error: return res
+            if self.current_tok.type != TOKENS['TT_RSQUARE']:
+                return res.failure(InvalidSyntaxError(
+                    self.current_tok.pos_start, self.current_tok.pos_end,
+                    f"Expected ',' or ']'"
+                ))
+            res.register_advancement()
+            self.advance()
+        return res.success(ListNode(element_nodes, pos_start, self.current_tok.pos_end.copy()))
+
     def if_expr(self):
         res = ParseResult()
         cases = []
@@ -463,6 +506,6 @@ class Parser:
         if res.error:
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end,
-                "Expected int, float, identifier, '+', '-', '(', 'NOT'"
+                "Expected int, float, identifier, '+', '-', '(', '[', 'NOT'"
             ))
         return res.success(node)
