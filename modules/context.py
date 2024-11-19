@@ -20,8 +20,13 @@ class Context:
             if self.symbol_table:
                 for key, value in self.symbol_table.symbols.items():
                     if key in BUILT_IN_FUNCTIONS: continue
-                    file.write(f"{key} : {repr(value)} (type: {type(value).__name__})\n")
+                    hex_address = hex(id(key))
+                    file.write(f"{key} : {repr(value)} (type: {type(value).__name__}), {hex_address}\n")
             file.write("--------------------------------------------\n")
+
+        with open("address_table.txt", "a") as file:
+            file.write(f"\<{self.display_name}> at {address}\n")
+            
         if self.parent:
             self.parent.print_symbol_table()
 

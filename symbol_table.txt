@@ -1,24 +1,29 @@
 
-Symbol table in context: <calcularFactorial> at 0x2c0ce59eb50
+Symbol table in context: <esPrimo> at 0x24680adf2d0
 --------------------------------------------
-n : 1.0 (type: Number)
-factorial : 120.0 (type: Number)
---------------------------------------------
-
-Symbol table in context: <program> at 0x2c0ce59ce90
---------------------------------------------
-calcularFactorial : <function calcularFactorial> (type: Function)
-n : 5.0 (type: Number)
+x : 5.0 (type: Number), 0x7ffca7eb9c08
+i : 3 (type: Number), 0x7ffca7eb98c0
 --------------------------------------------
 
-Symbol table in context: <run> at 0x2c0ce58d990
+Symbol table in context: <program> at 0x24680add210
 --------------------------------------------
-fn : "tests/factorial.coffee" (type: String)
+esPrimo : <function esPrimo> (type: Function), 0x24680acb230
+n : 5.0 (type: Number), 0x7ffca7eb99d8
 --------------------------------------------
 
-Symbol table in context: <program> at 0x2c0ce58d710
+Symbol table in context: <run> at 0x24680acab90
 --------------------------------------------
-calcularFactorial : <function calcularFactorial> (type: Function)
-n : 5.0 (type: Number)
-resultado : 120.0 (type: Number)
+fn : "tests/example.coffee" (type: String), 0x7ffca7d5f9e8
+--------------------------------------------
+
+Symbol table in context: <program> at 0x24680aca950
+--------------------------------------------
+esPrimo : <function esPrimo> (type: Function), 0x24680acb230
+n : 5.0 (type: Number), 0x7ffca7eb99d8
+--------------------------------------------
+
+Symbol table in context: <program> at 0x24680aca950
+--------------------------------------------
+esPrimo : <function esPrimo> (type: Function), 0x24680acb230
+n : 5.0 (type: Number), 0x7ffca7eb99d8
 --------------------------------------------
