@@ -1,0 +1,24 @@
+
+Symbol table in context: <calcularFactorial> at 0x2c0ce59eb50
+--------------------------------------------
+n : 1.0 (type: Number)
+factorial : 120.0 (type: Number)
+--------------------------------------------
+
+Symbol table in context: <program> at 0x2c0ce59ce90
+--------------------------------------------
+calcularFactorial : <function calcularFactorial> (type: Function)
+n : 5.0 (type: Number)
+--------------------------------------------
+
+Symbol table in context: <run> at 0x2c0ce58d990
+--------------------------------------------
+fn : "tests/factorial.coffee" (type: String)
+--------------------------------------------
+
+Symbol table in context: <program> at 0x2c0ce58d710
+--------------------------------------------
+calcularFactorial : <function calcularFactorial> (type: Function)
+n : 5.0 (type: Number)
+resultado : 120.0 (type: Number)
+--------------------------------------------

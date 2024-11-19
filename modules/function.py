@@ -237,14 +237,17 @@ class BuiltInFunction(BaseFunction):
                 f"Failed to load script \"{fn}\"\n" + str(e),
                 execution_context
             ))
-        _, error, _ = run(fn, script)
+        _, error, context = run(fn, script)
         if error:
             return rt_result.failure(RTError(
                 self.pos_start, self.pos_end,
                 f"Failed to finish executing script \"{fn}\"\n" + error.as_string(),
                 execution_context
             ))
-        
+        if context:
+            execution_context.print_symbol_table()
+            
+
         return rt_result.success(Number.null)
 
     execute_run.arg_names = ['fn'] 
@@ -275,6 +278,7 @@ class Function(BaseFunction):
     def execute(self, args, interpreter, rt_result, run=None):
         res = rt_result
         execution_context = self.generate_new_context()
+        self.context = execution_context  # Ensure the function context is set
         
         res.register(self.check_and_populate_args(self.arg_names, args, execution_context, rt_result))
         if res.should_return(): return res
@@ -283,6 +287,7 @@ class Function(BaseFunction):
         if res.should_return() and res.func_return_value is None: return res
         
         ret_value = (value if self.should_auto_return else None) or res.func_return_value or Number.null
+        execution_context.print_symbol_table()
         return res.success(ret_value)
     
     def copy(self):
