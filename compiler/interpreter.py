@@ -1,9 +1,9 @@
 from compiler.tokens import TOKENS
 from modules.list import List
-from modules.number import Number
 from modules.errors import RTError
 from modules.function import Function
-from modules.string import String
+from modules.value import Number
+from modules.value import String
 
 ###############################
 # RUNTIME RESULT
@@ -20,7 +20,8 @@ class RTResult:
         self.loop_should_break = False
 
     def register(self, res):
-        if res.should_return(): self.error = res.error
+        self.error = res.error
+        self.func_return_value = res.func_return_value
         self.loop_should_continue = res.loop_should_continue
         self.loop_should_break = res.loop_should_break
         return res.value
@@ -108,6 +109,14 @@ class Interpreter:
         var_name = node.var_name_tok.value
         value = res.register(self.visit(node.value_node, context, run))
         if res.should_return(): return res
+
+        if node.declaration:
+            if context.symbol_table.get(var_name):
+                return res.failure(RTError(
+                    node.pos_start, node.pos_end,
+                    f"Variable '{var_name}' already declared",
+                    context
+                ))
         context.symbol_table.set(var_name, value)
         return res.success(value)
 
@@ -126,6 +135,8 @@ class Interpreter:
             result, error = left.multed_by(right)
         elif node.op_tok.type == TOKENS['TT_DIV']:
             result, error = left.dived_by(right)
+        elif node.op_tok.type == TOKENS['TT_MOD']:
+            result, error = left.modded_by(right)
         elif node.op_tok.type == TOKENS['TT_POW']:
             result, error = left.powed_by(right)
         elif node.op_tok.type == TOKENS['TT_EE']:
@@ -270,6 +281,7 @@ class Interpreter:
             value = res.register(self.visit(node.node_to_return, context, run))
             if res.should_return(): return res
         else:
+            print("HOLA")
             value = Number.null
         return res.success_return(value)
     

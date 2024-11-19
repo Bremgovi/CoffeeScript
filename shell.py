@@ -11,10 +11,17 @@ while True:
         else: print(repr(result))
 
     # # Optional prints
+    # BUILT_IN_FUNCTIONS = [
+    #     "NULL", "TRUE", "FALSE", "MATH_PI", "PRINT", "INPUT", "INPUT_INT", "INPUT_FLOAT", "CLEAR",
+    #     "IS_NUMBER", "IS_STRING", "IS_LIST", "IS_FUNCTION", "APPEND", "POP", "EXTEND", "LEN", "RUN"
+    # ]
     # if context:
     #     print("--------------------------------------------")
     #     print("Symbol table in context: " + context.display_name)
-    #     print(context.symbol_table)
+    #     for key in context.symbol_table.symbols:
+    #         if key in BUILT_IN_FUNCTIONS: continue
+    #         symbol = context.symbol_table.get(key)
+    #         print(f"{key} : {repr(symbol)} (type: {type(symbol).__name__})")
 
     # # Generate tokens and print the token table
     # lexer = Lexer('<stdin>', text)

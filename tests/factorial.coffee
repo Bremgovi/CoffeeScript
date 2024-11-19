@@ -14,7 +14,7 @@ FUNCTION calcularFactorial(n)
 END
 
 PRINT("Ingresa un numero entero")
-VAR n = INPUT_INT()
+VAR n = INPUT()
 VAR resultado = calcularFactorial(n)
 IF resultado == -1 THEN 
     PRINT("El Factorial no esta definido para números negativos")

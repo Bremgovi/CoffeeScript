@@ -1,8 +1,19 @@
-# This is an example file to test the CoffeeScript parser
+FUNCTION esPrimo(x)
+    IF x <= 1 THEN RETURN FALSE
+    VAR i = 2
+    WHILE i <= x / 2 THEN
+        IF x % i == 0 THEN
+            RETURN FALSE
+        END
+        i = i + 1
+    END
+    RETURN TRUE
+END
 
-PRINT("Greetings from example.coffee")
-
-FOR i = 5 TO 10 THEN
-  PRINT("Hola!")
-  PRINT(i)
+PRINT("Ingresa un numero entero")
+VAR n = INPUT()
+IF esPrimo(n) THEN
+    PRINT(n + " es un numero primo")
+ELSE
+    PRINT(n + " NO es un numero primo")
 END

@@ -11,7 +11,7 @@ FUNCTION esPrimo(x)
 END
 
 PRINT("Ingresa un numero entero")
-VAR n = INPUT_INT()
+VAR n = INPUT()
 IF esPrimo(n) THEN
     PRINT(n + " es un numero primo")
 ELSE

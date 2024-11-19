@@ -1,7 +1,7 @@
 from modules.errors import RTError
 from modules.list import List
-from modules.number import Number
-from modules.string import String
+from modules.value import Number
+from modules.value import String
 from modules.value import Value
 from modules.context import Context
 from modules.symbol_table import SymbolTable
@@ -80,7 +80,14 @@ class BuiltInFunction(BaseFunction):
         return f"<built-in function {self.name}>"
 
     def execute_print(self, execution_context, rt_result):
-        print(str(execution_context.symbol_table.get("value")))
+        # print(str(execution_context.symbol_table.get("value")))
+        # return rt_result.success(Number.null)
+        value = execution_context.symbol_table.get("value")
+        if isinstance(value, List):
+            concatenated_string = ''.join([str(element) for element in value.elements])
+        else:
+            concatenated_string = str(value)
+        print(concatenated_string)
         return rt_result.success(Number.null)
     execute_print.arg_names = ["value"]
 
@@ -90,7 +97,11 @@ class BuiltInFunction(BaseFunction):
 
     def execute_input(self, execution_context, rt_result):
         text = input()
-        return rt_result.success(String(text))
+        try:
+            number = float(text)
+            return rt_result.success(Number(number))
+        except ValueError:
+            return rt_result.success(String(text))
     execute_input.arg_names = []
     
     def execute_input_int(self, execution_context, rt_result):
@@ -104,6 +115,17 @@ class BuiltInFunction(BaseFunction):
                 text = input()
         return rt_result.success(Number(number))
     execute_input_int.arg_names = []
+
+    def execute_input_float(self, execution_context, rt_result):
+        while True:
+            text = input()
+            try:
+                number = float(text)
+                break
+            except ValueError:
+                print(f"'{text}' must be a float. Try again.")
+        return rt_result.success(Number(number))
+    execute_input_float.arg_names = []
 
     def execute_clear(self, execution_context, rt_result):
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -231,6 +253,7 @@ BuiltInFunction.print = BuiltInFunction("print")
 BuiltInFunction.print_ret = BuiltInFunction("print_ret")
 BuiltInFunction.input = BuiltInFunction("input")
 BuiltInFunction.input_int = BuiltInFunction("input_int")
+BuiltInFunction.input_float = BuiltInFunction("input_float")
 BuiltInFunction.clear = BuiltInFunction("clear")
 BuiltInFunction.is_number = BuiltInFunction("is_number")
 BuiltInFunction.is_string = BuiltInFunction("is_string")

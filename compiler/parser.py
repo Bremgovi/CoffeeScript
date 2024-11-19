@@ -271,7 +271,7 @@ class Parser:
         return self.power()
 
     def term(self):
-        return self.bin_op(self.factor, (TOKENS['TT_MUL'], TOKENS['TT_DIV']))
+        return self.bin_op(self.factor, (TOKENS['TT_MUL'], TOKENS['TT_DIV'], TOKENS['TT_MOD']))
 
     def expr(self):
         res = ParseResult()
@@ -291,15 +291,27 @@ class Parser:
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     "Expected '='"
                 ))
+            
             res.register_advancement()
             self.advance()
             expr = res.register(self.expr())
             if res.error: return res
-            return res.success(VarAssignNode(var_name, expr))
-    
-        # node = res.register(self.bin_op(self.term, (TOKENS['TT_PLUS'], TOKENS['TT_MINUS']))) 
-        node = res.register(self.bin_op(self.comp_expr, ((TOKENS['TT_KEYWORD'], 'AND'), (TOKENS['TT_KEYWORD'], 'OR')))) 
+            return res.success(VarAssignNode(var_name, expr, True))
         
+        elif self.current_tok.type == TOKENS['TT_IDENTIFIER']:
+            var_name = self.current_tok
+            res.register_advancement()
+            self.advance()
+            if self.current_tok.type == TOKENS['TT_EQ']:
+                res.register_advancement()
+                self.advance()
+                expr = res.register(self.expr())
+                if res.error: return res
+                return res.success(VarAssignNode(var_name, expr, False))
+            else:
+                self.reverse()
+        node = res.register(self.bin_op(self.comp_expr, ((TOKENS['TT_KEYWORD'], 'AND'), (TOKENS['TT_KEYWORD'], 'OR'))))
+
         if res.error: 
             return res.failure(InvalidSyntaxError(
                 self.current_tok.pos_start, self.current_tok.pos_end,

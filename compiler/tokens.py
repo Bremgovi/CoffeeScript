@@ -10,6 +10,7 @@ TOKENS = {
     'TT_MINUS': 'MINUS',
     'TT_MUL': 'MUL',
     'TT_DIV': 'DIV',
+    'TT_MOD': 'MOD',
     'TT_LPAREN': 'LPAREN',
     'TT_RPAREN': 'RPAREN',
     'TT_LSQUARE': 'LSQUARE',

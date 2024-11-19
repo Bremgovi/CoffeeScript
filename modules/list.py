@@ -1,4 +1,4 @@
-from modules.number import Number
+from modules.value import Number
 from modules.value import Value
 from modules.errors import RTError
 

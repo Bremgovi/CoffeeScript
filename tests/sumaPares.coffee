@@ -1,9 +1,9 @@
 VAR suma = 0
 VAR temp = 0
 PRINT("Valor de n: ")
-VAR n = INPUT_INT()
+VAR n = INPUT()
 PRINT("Valor de m: ")
-VAR m = INPUT_INT()
+VAR m = INPUT()
 
 IF n > m THEN
 	temp = n
@@ -19,4 +19,4 @@ WHILE temp <= m THEN
 	temp = temp + 1
 END
 
-PRINT("La suma entre " + n + " y " + m + "es: " + suma)
+PRINT("La suma entre " + n + " y " + m + " es: " + suma)

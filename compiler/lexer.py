@@ -73,6 +73,9 @@ class Lexer:
             elif self.current_char == '/':
                 tokens.append(Token(TOKENS['TT_DIV'], pos_start=self.pos))
                 self.advance()
+            elif self.current_char == '%':
+                tokens.append(Token(TOKENS['TT_MOD'], pos_start=self.pos))
+                self.advance()
             elif self.current_char == '^':
                 tokens.append(Token(TOKENS['TT_POW'], pos_start=self.pos))
                 self.advance()
