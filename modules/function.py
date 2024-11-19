@@ -50,7 +50,7 @@ class BuiltInFunction(BaseFunction):
     def __init__(self, name):
         super().__init__(name)
     
-    def execute(self, args, interpreter, rt_result):
+    def execute(self, args, interpreter, rt_result, run=None):
         res = rt_result
         execution_context = self.generate_new_context()
         method_name = f'execute_{self.name}'
@@ -59,7 +59,10 @@ class BuiltInFunction(BaseFunction):
         res.register(self.check_and_populate_args(method.arg_names, args, execution_context, rt_result))
         if res.should_return(): return res
 
-        return_value = res.register(method(execution_context, rt_result))
+        if self.name == "run":
+            return_value = res.register(method(execution_context, rt_result, run))
+        else:
+            return_value = res.register(method(execution_context, rt_result))
         if res.should_return(): return res
 
         return res.success(return_value)
@@ -183,6 +186,47 @@ class BuiltInFunction(BaseFunction):
         return rt_result.success(Number.null)
     execute_extend.arg_names = ['list1', 'list2']
 
+    def execute_len(self, execution_context, rt_result):
+        list_ = execution_context.symbol_table.get("list")
+        if not isinstance(list_, List):
+            return rt_result.failure(RTError(
+                self.pos_start, self.pos_end,
+                "Argument must be list",
+                execution_context
+            ))
+        return rt_result.success(Number(len(list_.elements)))
+    execute_len.arg_names = ['list']
+
+    def execute_run(self, execution_context, rt_result, run):
+        fn = execution_context.symbol_table.get("fn")
+        if not isinstance(fn, String):
+            return rt_result.failure(RTError(
+                self.pos_start, self.pos_end,
+                "Argument must be string",
+                execution_context
+            ))
+        fn = fn.value
+        try:
+            with open(fn, "r") as f:
+                script = f.read()
+        except Exception as e:
+            return rt_result.failure(RTError(
+                self.pos_start, self.pos_end,
+                f"Failed to load script \"{fn}\"\n" + str(e),
+                execution_context
+            ))
+        _, error, _ = run(fn, script)
+        if error:
+            return rt_result.failure(RTError(
+                self.pos_start, self.pos_end,
+                f"Failed to finish executing script \"{fn}\"\n" + error.as_string(),
+                execution_context
+            ))
+        
+        return rt_result.success(Number.null)
+
+    execute_run.arg_names = ['fn'] 
+
 BuiltInFunction.print = BuiltInFunction("print")
 BuiltInFunction.print_ret = BuiltInFunction("print_ret")
 BuiltInFunction.input = BuiltInFunction("input")
@@ -195,7 +239,8 @@ BuiltInFunction.is_function = BuiltInFunction("is_function")
 BuiltInFunction.append = BuiltInFunction("append")
 BuiltInFunction.pop = BuiltInFunction("pop")
 BuiltInFunction.extend = BuiltInFunction("extend")
-
+BuiltInFunction.len = BuiltInFunction("len")
+BuiltInFunction.run = BuiltInFunction("run")
 
 class Function(BaseFunction):
     def __init__(self, name, body_node, arg_names, should_auto_return):
@@ -204,15 +249,15 @@ class Function(BaseFunction):
         self.arg_names = arg_names
         self.should_auto_return = should_auto_return
     
-    def execute(self, args, interpreter, rt_result):
+    def execute(self, args, interpreter, rt_result, run=None):
         res = rt_result
         execution_context = self.generate_new_context()
         
-        res.register( self.check_and_populate_args(self.arg_names, args, execution_context, rt_result) )
+        res.register(self.check_and_populate_args(self.arg_names, args, execution_context, rt_result))
         if res.should_return(): return res
 
-        value = res.register(interpreter.visit(self.body_node, execution_context))
-        if res.should_return() and res.func_return_value == None : return res
+        value = res.register(interpreter.visit(self.body_node, execution_context, run))
+        if res.should_return() and res.func_return_value is None: return res
         
         ret_value = (value if self.should_auto_return else None) or res.func_return_value or Number.null
         return res.success(ret_value)

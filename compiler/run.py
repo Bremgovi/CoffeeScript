@@ -29,6 +29,8 @@ global_symbol_table.set("IS_FUNCTION", BuiltInFunction("is_function"))
 global_symbol_table.set("APPEND", BuiltInFunction("append"))
 global_symbol_table.set("POP", BuiltInFunction("pop"))
 global_symbol_table.set("EXTEND", BuiltInFunction("extend"))
+global_symbol_table.set("LEN", BuiltInFunction("len"))
+global_symbol_table.set("RUN", BuiltInFunction("run"))
 
 def run(fn, text, context = None):
     # Generate Tokens (Lexical Analysis)
@@ -48,6 +50,6 @@ def run(fn, text, context = None):
     interpreter = Interpreter()
     context = Context('<program>')
     context.symbol_table = global_symbol_table
-    result = interpreter.visit(ast.node, context)
+    result = interpreter.visit(ast.node, context, run)
 
     return result.value, result.error, context
