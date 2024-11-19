@@ -26,6 +26,7 @@ TOKENS = {
     'TT_GTE': 'GTE',
     'TT_COMMA': 'COMMA',
     'TT_ARROW': 'ARROW',
+    'TT_NEWLINE': 'NEWLINE',
     'TT_EOF': 'EOF',
 }
 
@@ -43,10 +44,10 @@ KEYWORDS = [
     'STEP',
     'WHILE',
     'FUNCTION',
-    # 'END',
-    # 'RETURN',
-    # 'CONTINUE',
-    # 'BREAK',
+    'END',
+    'RETURN',
+    'CONTINUE',
+    'BREAK',
     # 'TRUE',
     # 'FALSE',
     # 'NULL',

@@ -42,7 +42,7 @@ class BaseFunction(Value):
     def check_and_populate_args(self, arg_names, args, execution_context, rt_result):
         res = rt_result
         res.register(self.check_args(arg_names, args, rt_result))
-        if res.error: return res
+        if res.should_return(): return res
         self.populate_args(arg_names, args, execution_context)
         return res.success(None)
 
@@ -57,10 +57,10 @@ class BuiltInFunction(BaseFunction):
         method = getattr(self, method_name, self.no_visit_method)
         
         res.register(self.check_and_populate_args(method.arg_names, args, execution_context, rt_result))
-        if res.error: return res
+        if res.should_return(): return res
 
         return_value = res.register(method(execution_context, rt_result))
-        if res.error: return res
+        if res.should_return(): return res
 
         return res.success(return_value)
     
@@ -198,21 +198,27 @@ BuiltInFunction.extend = BuiltInFunction("extend")
 
 
 class Function(BaseFunction):
-    def __init__(self, name, body_node, arg_names):
+    def __init__(self, name, body_node, arg_names, should_auto_return):
         super().__init__(name)
         self.body_node = body_node
         self.arg_names = arg_names
+        self.should_auto_return = should_auto_return
     
     def execute(self, args, interpreter, rt_result):
         res = rt_result
         execution_context = self.generate_new_context()
+        
         res.register( self.check_and_populate_args(self.arg_names, args, execution_context, rt_result) )
+        if res.should_return(): return res
+
         value = res.register(interpreter.visit(self.body_node, execution_context))
-        if res.error: return res
-        return res.success(value)
+        if res.should_return() and res.func_return_value == None : return res
+        
+        ret_value = (value if self.should_auto_return else None) or res.func_return_value or Number.null
+        return res.success(ret_value)
     
     def copy(self):
-        copy = Function(self.name, self.body_node, self.arg_names)
+        copy = Function(self.name, self.body_node, self.arg_names, self.should_auto_return)
         copy.set_context(self.context)
         copy.set_pos(self.pos_start, self.pos_end)
         return copy
