@@ -110,13 +110,15 @@ class Interpreter:
         value = res.register(self.visit(node.value_node, context, run))
         if res.should_return(): return res
 
-        if node.declaration:
-            if context.symbol_table.get(var_name):
+        # Check if variable already exists when using VAR keyword
+        if node.var_name_tok.type == TOKENS['TT_KEYWORD'] and node.var_name_tok.value == 'VAR':
+            if context.symbol_table.get(var_name) is not None:
                 return res.failure(RTError(
-                    node.pos_start, node.pos_end,
-                    f"Variable '{var_name}' already declared",
-                    context
+                node.pos_start, node.pos_end,
+                f"Variable '{var_name}' is already declared",
+                context
                 ))
+            
         context.symbol_table.set(var_name, value)
         return res.success(value)
 

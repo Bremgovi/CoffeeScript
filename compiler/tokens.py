@@ -49,9 +49,6 @@ KEYWORDS = [
     'RETURN',
     'CONTINUE',
     'BREAK',
-    # 'TRUE',
-    # 'FALSE',
-    # 'NULL',
 ]
 
 # Token class to keep track of the tokens in the input text

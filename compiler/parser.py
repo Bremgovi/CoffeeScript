@@ -44,8 +44,9 @@ class ParseResult:
 # PARSER
 ###############################
 class Parser:
-    def __init__(self, tokens):
+    def __init__(self, tokens, global_symbol_table):
         self.tokens = tokens
+        self.global_symbol_table = global_symbol_table
         self.tok_idx = -1
         self.advance()
 
@@ -278,14 +279,17 @@ class Parser:
         if self.current_tok.matches(TOKENS['TT_KEYWORD'], 'VAR'):
             res.register_advancement()
             self.advance()
+
             if self.current_tok.type != TOKENS['TT_IDENTIFIER']:
                 return res.failure(InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
                     "Expected identifier"
                 ))
+            
             var_name = self.current_tok
             res.register_advancement()
             self.advance()
+
             if self.current_tok.type != TOKENS['TT_EQ']:
                 return res.failure(InvalidSyntaxError(
                     self.current_tok.pos_start, self.current_tok.pos_end,
@@ -296,18 +300,36 @@ class Parser:
             self.advance()
             expr = res.register(self.expr())
             if res.error: return res
-            return res.success(VarAssignNode(var_name, expr, True))
+
+            # Check if variable already exists
+            if self.global_symbol_table.get(var_name.value) is not None:
+                return res.failure(InvalidSyntaxError(
+                var_name.pos_start, var_name.pos_end,
+                f"Variable '{var_name.value}' is already declared"
+                ))
+
+            return res.success(VarAssignNode(var_name, expr))
         
         elif self.current_tok.type == TOKENS['TT_IDENTIFIER']:
             var_name = self.current_tok
             res.register_advancement()
             self.advance()
+            
+
+            # Check if variable already exists
+            if self.global_symbol_table.get(var_name.value) is None:
+                return res.failure(InvalidSyntaxError(
+                var_name.pos_start, var_name.pos_end,
+                f"Variable '{var_name.value}' is not declared"
+                ))
+
+
             if self.current_tok.type == TOKENS['TT_EQ']:
                 res.register_advancement()
                 self.advance()
                 expr = res.register(self.expr())
                 if res.error: return res
-                return res.success(VarAssignNode(var_name, expr, False))
+                return res.success(VarAssignNode(var_name, expr))
             else:
                 self.reverse()
         node = res.register(self.bin_op(self.comp_expr, ((TOKENS['TT_KEYWORD'], 'AND'), (TOKENS['TT_KEYWORD'], 'OR'))))

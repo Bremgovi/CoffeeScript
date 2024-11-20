@@ -32,11 +32,11 @@ atom            : INT | FLOAT | STRING | IDENTIFIER
 
 list-expr       : LSQUARE (expr (COMMA expr)*)? RSQUARE
 
-if-expr         : KEYWORD:IF expr KEYWORD:THEN
+if-expr         : KEYWORD:IF LPAREN expr RPAREN KEYWORD:THEN
                   (statement elif-expr | else-expr?)
                 | (NEWLINE statements KEYWORD:END|elif-expr|else-expr)
 
-elif-expr       : KEYWORD:ELIF expr KEYWORD:THEN
+elif-expr       : KEYWORD:ELIF LPAREN expr RPAREN KEYWORD:THEN
                   (statement elif-expr | else-expr?)
                 | (NEWLINE statements KEYWORD:END|elif-expr|else-expr)
 

@@ -1,3 +1,5 @@
+FUNCTION example()
+
 FUNCTION esPrimo(x)
     IF x <= 1 THEN RETURN FALSE
     VAR i = 2
@@ -16,4 +18,6 @@ IF esPrimo(n) THEN
     PRINT(n + " es un numero primo")
 ELSE
     PRINT(n + " NO es un numero primo")
+END
+
 END

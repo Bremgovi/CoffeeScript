@@ -58,7 +58,7 @@ def run(fn, text, context = None):
     
     # Generate AST (Intermediate Representation) (Syntax Analysis) (Semantic Analysis)
     # Visits each token and generates the corresponding node in the AST
-    parser = Parser(tokens)
+    parser = Parser(tokens, global_symbol_table)
     ast = parser.parse()
     if ast.error: return None, ast.error, context
 
